@@ -16,6 +16,8 @@ pub struct Conways {
 
 impl Conways {
 
+    // Using this function in the test
+    #[allow(dead_code)]
     pub fn default() -> Self {
         Self {
             grid: vec![vec![CellState::Dead; COLUMNS]; ROWS]
@@ -37,8 +39,8 @@ impl Conways {
     pub fn update_cells(&mut self) {
         let mut new_grid = self.grid.clone();
     
-        for x in 0..ROWS {
-            for y in 0..COLUMNS {
+        for (x, _) in self.grid.iter().enumerate() {
+            for (y, _) in self.grid.iter().enumerate() {
                 let neighbors = self.count_neighbors(Position(x, y));
                 new_grid[x][y] = match (self.grid[x][y], neighbors) {
                     (CellState::Alive, 2 | 3) => CellState::Alive,
