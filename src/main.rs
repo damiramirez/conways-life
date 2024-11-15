@@ -4,7 +4,7 @@ use conways::Conways;
 use macroquad::prelude::*;
 
 const CELL_SIZE: f32 = 20.;
-const UPDATE_TIMER: f64 = 5.;
+const UPDATE_TIMER: f64 = 0.1;
 
 fn conf() -> Conf {
     Conf {
@@ -22,6 +22,7 @@ async fn main() {
     let mut last_updated = 0_f64;
     let mut conways = Conways::from_random_cells();
 
+    let mut running = true;
     loop {
         clear_background(BLACK);
 
@@ -57,9 +58,13 @@ async fn main() {
             conways.update_state_cell(mark_cell);
         }
 
-        if get_time() - last_updated > UPDATE_TIMER {
+        if running && get_time() - last_updated > UPDATE_TIMER {
             last_updated = get_time();
             conways.update_cells();
+        }
+
+        if is_key_released(KeyCode::Space) {
+            running = !running;
         }
 
         next_frame().await
