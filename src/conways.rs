@@ -76,3 +76,49 @@ impl Conways {
         count
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_empty_grid() {
+        let conways = Conways::default();
+        for row in conways.grid.iter() {
+            for &cell in row.iter() {
+                assert_eq!(cell, CellState::Dead);
+            }
+        }
+    }
+
+    #[test]
+    fn test_from_with_alive_cells() {
+        let alive_cells = vec![Position(1, 1), Position(2, 2), Position(3, 3)];
+        let conways = Conways::from(alive_cells);
+        assert_eq!(conways.grid[1][1], CellState::Alive);
+        assert_eq!(conways.grid[2][2], CellState::Alive);
+        assert_eq!(conways.grid[3][3], CellState::Alive);
+        assert_eq!(conways.grid[2][1], CellState::Dead);
+    }
+
+    #[test]
+    fn test_count_neighbors() {
+        let alive_cells = vec![Position(1, 1), Position(1, 2), Position(1, 3)];
+        let conways = Conways::from(alive_cells);
+        assert_eq!(conways.count_neighbors(Position(0, 0)), 1);
+        assert_eq!(conways.count_neighbors(Position(1, 1)), 1);
+        assert_eq!(conways.count_neighbors(Position(1, 2)), 2);
+        assert_eq!(conways.count_neighbors(Position(2, 2)), 3);
+    }
+
+    #[test]
+    fn test_blinker_patron() {
+        let alive_cells = vec![Position(0,1), Position(1,1), Position(2,1)];
+        let mut conways = Conways::from(alive_cells);
+        conways.update_cells();
+        assert_eq!(CellState::Alive, conways.grid[1][2]);
+        assert_eq!(CellState::Alive, conways.grid[1][0]);
+        assert_eq!(CellState::Alive, conways.grid[1][1]);
+        assert_eq!(CellState::Dead, conways.grid[0][1]);
+    }
+}
