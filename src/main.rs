@@ -9,7 +9,7 @@ const UPDATE_TIMER: f64 = 0.1;
 fn conf() -> Conf {
     Conf {
         window_title: "Conway's Game of Life".to_string(),
-        window_height: 640,
+        window_height: 740,
         window_width: 640,
         fullscreen: false,
         window_resizable: false,
@@ -40,6 +40,22 @@ async fn main() {
                 );
             }
         }
+
+        draw_text(
+            "Start/Stop game with SPACE",
+            10.,
+            screen_height() - CELL_SIZE * 2.5,
+            32.,
+            RED,
+        );
+
+        draw_text(
+            "Click on the cells to create or delete one",
+            10.,
+            screen_height() - CELL_SIZE,
+            32.,
+            RED,
+        );
 
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
