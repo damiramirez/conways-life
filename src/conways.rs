@@ -30,7 +30,11 @@ impl Conways {
         let mut new_grid = self.grid.clone();
 
         for (x, _) in self.grid.iter().enumerate() {
-            for (y, _) in self.grid.iter().enumerate() {
+            let Some(cols) = self.grid.first() else {
+                return;
+            };
+
+            for (y, _) in cols.iter().enumerate() {
                 let neighbors = self.count_neighbors((x, y));
                 new_grid[x][y] = match (self.grid[x][y], neighbors) {
                     (CellState::Alive, 2 | 3) => CellState::Alive,
