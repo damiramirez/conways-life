@@ -14,14 +14,6 @@ pub struct Conways {
 }
 
 impl Conways {
-    // Using this function in the test
-    #[allow(dead_code)]
-    pub fn default() -> Self {
-        Self {
-            grid: vec![vec![CellState::Dead; COLUMNS]; ROWS],
-        }
-    }
-
     pub fn from(alive_cells: Vec<Position>) -> Self {
         let mut grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
 
@@ -71,11 +63,14 @@ impl Conways {
             let new_x = position.0 as isize + x;
             let new_y = position.1 as isize + y;
 
-            // Avoid leaving the grid
-            if new_x >= 0 && new_x < ROWS as isize && new_y >= 0 && new_y < COLUMNS as isize {
-                if let CellState::Alive = self.grid[new_x as usize][new_y as usize] {
-                    count += 1;
-                }
+            // Avoid leaving the grid and check if the cell is alive
+            if new_x >= 0
+                && new_x < ROWS as isize
+                && new_y >= 0
+                && new_y < COLUMNS as isize
+                && self.grid[new_x as usize][new_y as usize] == CellState::Alive
+            {
+                count += 1;
             }
         }
         count
@@ -88,7 +83,7 @@ mod tests {
 
     #[test]
     fn test_empty_grid() {
-        let conways = Conways::default();
+        let conways = Conways::from(vec![]);
         for row in conways.grid.iter() {
             for &cell in row.iter() {
                 assert_eq!(cell, CellState::Dead);

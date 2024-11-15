@@ -3,7 +3,7 @@ mod conways;
 use conways::Conways;
 use macroquad::prelude::*;
 
-const SIZE: f32 = 16.;
+const CELL_SIZE: f32 = 16.;
 const UPDATE_TIMER: f64 = 0.1;
 
 fn conf() -> Conf {
@@ -48,10 +48,10 @@ async fn main() {
         for (x_row, row) in conways.grid.iter().enumerate() {
             for (y_col, col) in row.iter().enumerate() {
                 draw_rectangle(
-                    x_row as f32 * SIZE,
-                    y_col as f32 * SIZE,
-                    SIZE,
-                    SIZE,
+                    x_row as f32 * CELL_SIZE,
+                    y_col as f32 * CELL_SIZE,
+                    CELL_SIZE,
+                    CELL_SIZE,
                     match col {
                         conways::CellState::Alive => WHITE,
                         conways::CellState::Dead => BLACK,
