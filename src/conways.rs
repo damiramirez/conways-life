@@ -16,6 +16,12 @@ pub struct Conways {
 
 impl Conways {
 
+    pub fn default() -> Self {
+        Self {
+            grid: vec![vec![CellState::Dead; COLUMNS]; ROWS]
+        }
+    }
+
     pub fn from(alive_cells: Vec<Position>) -> Self {
         let mut grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
         
@@ -30,27 +36,19 @@ impl Conways {
 
     pub fn update_cells(&mut self) {
         let mut new_grid = self.grid.clone();
-
-        // Iterate over the grid, updating with the new state
-        for x in 0..self.grid.len() {
-            for y in 0..self.grid.len() {
+    
+        for x in 0..ROWS {
+            for y in 0..COLUMNS {
                 let neighbors = self.count_neighbors(Position(x, y));
-                let cell = self.grid[x][y];
-                match cell {
-                    CellState::Alive => {
-                        if neighbors > 3 || neighbors < 2 {
-                            new_grid[x][y] = CellState::Dead;
-                        }
-                    }
-                    CellState::Dead => {
-                        if neighbors == 3 {
-                            new_grid[x][y] = CellState::Alive;
-                        }
-                    }
-                }
+                new_grid[x][y] = match (self.grid[x][y], neighbors) {
+                    (CellState::Alive, 2 | 3) => CellState::Alive,
+                    (CellState::Alive, _) => CellState::Dead,
+                    (CellState::Dead, 3) => CellState::Alive,
+                    (CellState::Dead, _) => CellState::Dead,
+                };
             }
         }
-        
+    
         self.grid = new_grid;
     }
 
