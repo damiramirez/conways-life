@@ -92,6 +92,16 @@ impl Conways {
         }
         count
     }
+
+    pub fn update_state_cell(&mut self, (x, y): Position) {
+        if x < ROWS && y < COLUMNS {
+            let current_state = self.grid[x][y];
+            match current_state {
+                CellState::Alive => self.grid[x][y] = CellState::Dead,
+                CellState::Dead => self.grid[x][y] = CellState::Alive,
+            }
+        }
+    }
 }
 
 #[cfg(test)]

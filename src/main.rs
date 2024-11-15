@@ -4,7 +4,7 @@ use conways::Conways;
 use macroquad::prelude::*;
 
 const CELL_SIZE: f32 = 20.;
-const UPDATE_TIMER: f64 = 0.1;
+const UPDATE_TIMER: f64 = 5.;
 
 fn conf() -> Conf {
     Conf {
@@ -38,6 +38,23 @@ async fn main() {
                     },
                 );
             }
+        }
+
+        if is_mouse_button_pressed(MouseButton::Left) {
+            let (mouse_x, mouse_y) = mouse_position();
+            let mark_cell: (usize, usize) = (
+                (mouse_x / CELL_SIZE).floor() as usize,
+                (mouse_y / CELL_SIZE).floor() as usize,
+            );
+            draw_rectangle(
+                mark_cell.0 as f32 * CELL_SIZE,
+                mark_cell.1 as f32 * CELL_SIZE,
+                CELL_SIZE,
+                CELL_SIZE,
+                WHITE,
+            );
+
+            conways.update_state_cell(mark_cell);
         }
 
         if get_time() - last_updated > UPDATE_TIMER {
