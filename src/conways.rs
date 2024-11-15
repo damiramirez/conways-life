@@ -1,3 +1,5 @@
+use rand::Rng;
+
 const COLUMNS: usize = 32;
 const ROWS: usize = 32;
 
@@ -24,6 +26,17 @@ impl Conways {
         }
 
         Self { grid }
+    }
+
+    pub fn from_random_cells() -> Self {
+        let mut random_positions: Vec<Position> = vec![];
+        let mut rng = rand::thread_rng();
+
+        for _ in 0..(ROWS * COLUMNS) / 2 {
+            random_positions.push((rng.gen_range(0..ROWS), rng.gen_range(0..COLUMNS)))
+        }
+
+        Self::from(random_positions)
     }
 
     pub fn update_cells(&mut self) {
@@ -78,6 +91,16 @@ impl Conways {
             }
         }
         count
+    }
+
+    pub fn update_state_cell(&mut self, (x, y): Position) {
+        if x < ROWS && y < COLUMNS {
+            let current_state = self.grid[x][y];
+            match current_state {
+                CellState::Alive => self.grid[x][y] = CellState::Dead,
+                CellState::Dead => self.grid[x][y] = CellState::Alive,
+            }
+        }
     }
 }
 
