@@ -3,7 +3,7 @@ mod conways;
 use conways::Conways;
 use macroquad::prelude::*;
 
-const CELL_SIZE: f32 = 16.;
+const CELL_SIZE: f32 = 20.;
 const UPDATE_TIMER: f64 = 0.1;
 
 fn conf() -> Conf {
@@ -20,27 +20,7 @@ fn conf() -> Conf {
 #[macroquad::main(conf)]
 async fn main() {
     let mut last_updated = 0_f64;
-
-    let alive_cells = vec![
-        (1, 3),
-        (1, 5),
-        (2, 1),
-        (2, 7),
-        (3, 3),
-        (3, 6),
-        (4, 2),
-        (4, 4),
-        (4, 8),
-        (5, 1),
-        (5, 5),
-        (5, 7),
-        (6, 3),
-        (6, 4),
-        (6, 8),
-        (7, 2),
-        (7, 5),
-    ];
-    let mut conways: Conways = Conways::from(alive_cells);
+    let mut conways = Conways::from_random_cells();
 
     loop {
         clear_background(BLACK);

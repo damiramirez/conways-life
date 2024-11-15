@@ -1,3 +1,5 @@
+use rand::Rng;
+
 const COLUMNS: usize = 32;
 const ROWS: usize = 32;
 
@@ -24,6 +26,17 @@ impl Conways {
         }
 
         Self { grid }
+    }
+
+    pub fn from_random_cells() -> Self {
+        let mut random_positions: Vec<Position> = vec![];
+        let mut rng = rand::thread_rng();
+
+        for _ in 0..(ROWS * COLUMNS) / 2 {
+            random_positions.push((rng.gen_range(0..ROWS), rng.gen_range(0..COLUMNS)))
+        }
+
+        Self::from(random_positions)
     }
 
     pub fn update_cells(&mut self) {
