@@ -1,7 +1,7 @@
 mod conways;
 
-use macroquad::prelude::*;
 use conways::Conways;
+use macroquad::prelude::*;
 
 const SIZE: f32 = 16.;
 const UPDATE_TIMER: f64 = 0.1;
@@ -19,27 +19,26 @@ fn conf() -> Conf {
 
 #[macroquad::main(conf)]
 async fn main() {
-
     let mut last_updated = 0_f64;
 
     let alive_cells = vec![
-        conways::Position(1, 3),
-        conways::Position(1, 5),
-        conways::Position(2, 1),
-        conways::Position(2, 7),
-        conways::Position(3, 3),
-        conways::Position(3, 6),
-        conways::Position(4, 2),
-        conways::Position(4, 4),
-        conways::Position(4, 8),
-        conways::Position(5, 1),
-        conways::Position(5, 5),
-        conways::Position(5, 7),
-        conways::Position(6, 3),
-        conways::Position(6, 4),
-        conways::Position(6, 8),
-        conways::Position(7, 2),
-        conways::Position(7, 5),
+        (1, 3),
+        (1, 5),
+        (2, 1),
+        (2, 7),
+        (3, 3),
+        (3, 6),
+        (4, 2),
+        (4, 4),
+        (4, 8),
+        (5, 1),
+        (5, 5),
+        (5, 7),
+        (6, 3),
+        (6, 4),
+        (6, 8),
+        (7, 2),
+        (7, 5),
     ];
     let mut conways: Conways = Conways::from(alive_cells);
 
@@ -56,7 +55,7 @@ async fn main() {
                     match col {
                         conways::CellState::Alive => WHITE,
                         conways::CellState::Dead => BLACK,
-                    }
+                    },
                 );
             }
         }

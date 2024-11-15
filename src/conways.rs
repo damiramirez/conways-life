@@ -7,41 +7,39 @@ pub enum CellState {
     Dead,
 }
 
-#[derive(Clone, Copy)]
-pub struct Position(pub usize, pub usize);
+type Position = (usize, usize);
 
 pub struct Conways {
     pub grid: Vec<Vec<CellState>>,
 }
 
 impl Conways {
-
     // Using this function in the test
     #[allow(dead_code)]
     pub fn default() -> Self {
         Self {
-            grid: vec![vec![CellState::Dead; COLUMNS]; ROWS]
+            grid: vec![vec![CellState::Dead; COLUMNS]; ROWS],
         }
     }
 
     pub fn from(alive_cells: Vec<Position>) -> Self {
         let mut grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
-        
-        for Position(x, y) in alive_cells {
+
+        for (x, y) in alive_cells {
             if x < ROWS && y < COLUMNS {
                 grid[x][y] = CellState::Alive;
             }
         }
-        
+
         Self { grid }
     }
 
     pub fn update_cells(&mut self) {
         let mut new_grid = self.grid.clone();
-    
+
         for (x, _) in self.grid.iter().enumerate() {
             for (y, _) in self.grid.iter().enumerate() {
-                let neighbors = self.count_neighbors(Position(x, y));
+                let neighbors = self.count_neighbors((x, y));
                 new_grid[x][y] = match (self.grid[x][y], neighbors) {
                     (CellState::Alive, 2 | 3) => CellState::Alive,
                     (CellState::Alive, _) => CellState::Dead,
@@ -50,7 +48,7 @@ impl Conways {
                 };
             }
         }
-    
+
         self.grid = new_grid;
     }
 
@@ -59,9 +57,14 @@ impl Conways {
 
         // Position of the eight neighbors
         let directions = [
-            (-1, -1), (-1, 0), (-1, 1),
-            (0, -1),           (0, 1),
-            (1, -1),  (1, 0),   (1, 1),
+            (-1, -1),
+            (-1, 0),
+            (-1, 1),
+            (0, -1),
+            (0, 1),
+            (1, -1),
+            (1, 0),
+            (1, 1),
         ];
 
         for (x, y) in directions.iter() {
@@ -95,7 +98,7 @@ mod tests {
 
     #[test]
     fn test_from_with_alive_cells() {
-        let alive_cells = vec![Position(1, 1), Position(2, 2), Position(3, 3)];
+        let alive_cells = vec![(1, 1), (2, 2), (3, 3)];
         let conways = Conways::from(alive_cells);
         assert_eq!(conways.grid[1][1], CellState::Alive);
         assert_eq!(conways.grid[2][2], CellState::Alive);
@@ -105,17 +108,17 @@ mod tests {
 
     #[test]
     fn test_count_neighbors() {
-        let alive_cells = vec![Position(1, 1), Position(1, 2), Position(1, 3)];
+        let alive_cells = vec![(1, 1), (1, 2), (1, 3)];
         let conways = Conways::from(alive_cells);
-        assert_eq!(conways.count_neighbors(Position(0, 0)), 1);
-        assert_eq!(conways.count_neighbors(Position(1, 1)), 1);
-        assert_eq!(conways.count_neighbors(Position(1, 2)), 2);
-        assert_eq!(conways.count_neighbors(Position(2, 2)), 3);
+        assert_eq!(conways.count_neighbors((0, 0)), 1);
+        assert_eq!(conways.count_neighbors((1, 1)), 1);
+        assert_eq!(conways.count_neighbors((1, 2)), 2);
+        assert_eq!(conways.count_neighbors((2, 2)), 3);
     }
 
     #[test]
     fn test_blinker_patron() {
-        let alive_cells = vec![Position(0,1), Position(1,1), Position(2,1)];
+        let alive_cells = vec![(0, 1), (1, 1), (2, 1)];
         let mut conways = Conways::from(alive_cells);
         conways.update_cells();
         assert_eq!(CellState::Alive, conways.grid[1][2]);
