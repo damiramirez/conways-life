@@ -9,7 +9,7 @@ const UPDATE_TIMER: f64 = 0.1;
 fn conf() -> Conf {
     Conf {
         window_title: "Conway's Game of Life".to_string(),
-        window_height: 740,
+        window_height: 800,
         window_width: 640,
         fullscreen: false,
         window_resizable: false,
@@ -44,13 +44,21 @@ async fn main() {
         draw_text(
             "Start/Stop game with SPACE",
             10.,
-            screen_height() - CELL_SIZE * 2.5,
+            screen_height() - CELL_SIZE * 4.,
             32.,
             RED,
         );
 
         draw_text(
             "Click on the cells to create or delete one",
+            10.,
+            screen_height() - CELL_SIZE * 2.5,
+            32.,
+            RED,
+        );
+
+        draw_text(
+            "Kill ol the cells with LEFT SHIFT",
             10.,
             screen_height() - CELL_SIZE,
             32.,
@@ -59,19 +67,19 @@ async fn main() {
 
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
-            let mark_cell: (usize, usize) = (
+            let (mark_cell_x, mark_cell_y): (usize, usize) = (
                 (mouse_x / CELL_SIZE).floor() as usize,
                 (mouse_y / CELL_SIZE).floor() as usize,
             );
             draw_rectangle(
-                mark_cell.0 as f32 * CELL_SIZE,
-                mark_cell.1 as f32 * CELL_SIZE,
+                mark_cell_x as f32 * CELL_SIZE,
+                mark_cell_y as f32 * CELL_SIZE,
                 CELL_SIZE,
                 CELL_SIZE,
                 WHITE,
             );
 
-            conways.update_state_cell(mark_cell);
+            conways.toggle_state_cell((mark_cell_x, mark_cell_y));
         }
 
         if running && get_time() - last_updated > UPDATE_TIMER {
@@ -81,6 +89,10 @@ async fn main() {
 
         if is_key_released(KeyCode::Space) {
             running = !running;
+        }
+
+        if is_key_pressed(KeyCode::LeftShift) {
+            conways.kill_all_cells();
         }
 
         next_frame().await

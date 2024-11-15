@@ -28,6 +28,13 @@ impl Conways {
         Self { grid }
     }
 
+    pub fn kill_all_cells(&mut self) {
+        self.grid
+            .iter_mut()
+            .flatten()
+            .for_each(|cell| *cell = CellState::Dead);
+    }
+
     pub fn from_random_cells() -> Self {
         let mut random_positions: Vec<Position> = vec![];
         let mut rng = rand::thread_rng();
@@ -93,7 +100,7 @@ impl Conways {
         count
     }
 
-    pub fn update_state_cell(&mut self, (x, y): Position) {
+    pub fn toggle_state_cell(&mut self, (x, y): Position) {
         if x < ROWS && y < COLUMNS {
             let current_state = self.grid[x][y];
             match current_state {
