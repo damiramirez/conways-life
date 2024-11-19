@@ -28,6 +28,10 @@ impl Conways {
         Self { grid }
     }
 
+    pub fn kill_all_cells(&mut self) {
+        self.grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
+    }
+
     pub fn from_random_cells() -> Self {
         let mut random_positions: Vec<Position> = vec![];
         let mut rng = rand::thread_rng();
@@ -93,7 +97,7 @@ impl Conways {
         count
     }
 
-    pub fn update_state_cell(&mut self, (x, y): Position) {
+    pub fn toggle_state_cell(&mut self, (x, y): Position) {
         if x < ROWS && y < COLUMNS {
             let current_state = self.grid[x][y];
             match current_state {
@@ -106,6 +110,8 @@ impl Conways {
 
 #[cfg(test)]
 mod tests {
+    use std::cell::Cell;
+
     use super::*;
 
     #[test]
@@ -147,5 +153,27 @@ mod tests {
         assert_eq!(CellState::Alive, conways.grid[1][0]);
         assert_eq!(CellState::Alive, conways.grid[1][1]);
         assert_eq!(CellState::Dead, conways.grid[0][1]);
+    }
+
+    #[test]
+    fn test_toggle_cells() {
+        let alive_cells = vec![(0, 1), (1, 1), (2, 1)];
+        let mut conways = Conways::from(alive_cells);
+        conways.toggle_state_cell((0, 1));
+        conways.toggle_state_cell((0, 0));
+        assert_eq!(CellState::Alive, conways.grid[0][0]);
+        assert_eq!(CellState::Alive, conways.grid[1][1]);
+        assert_eq!(CellState::Dead, conways.grid[0][1]);
+    }
+
+    #[test]
+    fn test_kill_all_cells() {
+        let alive_cells = vec![(0, 1), (1, 1), (2, 1)];
+        let mut conways = Conways::from(alive_cells);
+        conways.kill_all_cells();
+        assert_eq!(CellState::Dead, conways.grid[0][0]);
+        assert_eq!(CellState::Dead, conways.grid[0][1]);
+        assert_eq!(CellState::Dead, conways.grid[1][1]);
+        assert_eq!(CellState::Dead, conways.grid[2][1]);
     }
 }
