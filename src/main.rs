@@ -58,7 +58,7 @@ async fn main() {
         );
 
         draw_text(
-            "Kill ol the cells with LEFT SHIFT",
+            "Kill all the cells with LEFT SHIFT",
             10.,
             screen_height() - CELL_SIZE,
             32.,
@@ -85,6 +85,15 @@ async fn main() {
         if running && get_time() - last_updated > UPDATE_TIMER {
             last_updated = get_time();
             conways.update_cells();
+        } else if !running {
+            let dimension = measure_text("PAUSE", None, 40, 1.);
+            draw_text(
+                "PAUSE",
+                (screen_width() - dimension.width) / 2.0,
+                (screen_height() - dimension.height) / 2.0,
+                40.,
+                RED,
+            );
         }
 
         if is_key_released(KeyCode::Space) {

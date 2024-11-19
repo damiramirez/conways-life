@@ -29,10 +29,7 @@ impl Conways {
     }
 
     pub fn kill_all_cells(&mut self) {
-        self.grid
-            .iter_mut()
-            .flatten()
-            .for_each(|cell| *cell = CellState::Dead);
+        self.grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
     }
 
     pub fn from_random_cells() -> Self {
@@ -113,6 +110,8 @@ impl Conways {
 
 #[cfg(test)]
 mod tests {
+    use std::cell::Cell;
+
     use super::*;
 
     #[test]
@@ -154,5 +153,27 @@ mod tests {
         assert_eq!(CellState::Alive, conways.grid[1][0]);
         assert_eq!(CellState::Alive, conways.grid[1][1]);
         assert_eq!(CellState::Dead, conways.grid[0][1]);
+    }
+
+    #[test]
+    fn test_toggle_cells() {
+        let alive_cells = vec![(0, 1), (1, 1), (2, 1)];
+        let mut conways = Conways::from(alive_cells);
+        conways.toggle_state_cell((0, 1));
+        conways.toggle_state_cell((0, 0));
+        assert_eq!(CellState::Alive, conways.grid[0][0]);
+        assert_eq!(CellState::Alive, conways.grid[1][1]);
+        assert_eq!(CellState::Dead, conways.grid[0][1]);
+    }
+
+    #[test]
+    fn test_kill_all_cells() {
+        let alive_cells = vec![(0, 1), (1, 1), (2, 1)];
+        let mut conways = Conways::from(alive_cells);
+        conways.kill_all_cells();
+        assert_eq!(CellState::Dead, conways.grid[0][0]);
+        assert_eq!(CellState::Dead, conways.grid[0][1]);
+        assert_eq!(CellState::Dead, conways.grid[1][1]);
+        assert_eq!(CellState::Dead, conways.grid[2][1]);
     }
 }
