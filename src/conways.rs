@@ -98,11 +98,10 @@ impl Conways {
     }
 
     pub fn toggle_state_cell(&mut self, (x, y): Position) {
-        if x < ROWS && y < COLUMNS {
-            let current_state = self.grid[x][y];
+        if let Some(current_state) = self.grid.get_mut(x).and_then(|column| column.get_mut(y)) {
             match current_state {
-                CellState::Alive => self.grid[x][y] = CellState::Dead,
-                CellState::Dead => self.grid[x][y] = CellState::Alive,
+                CellState::Alive => *current_state = CellState::Dead,
+                CellState::Dead => *current_state = CellState::Alive,
             }
         }
     }
