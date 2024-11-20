@@ -28,15 +28,17 @@ async fn main() {
 
         for (x_row, row) in conways.grid.iter().enumerate() {
             for (y_col, col) in row.iter().enumerate() {
+                let color = match col {
+                    conways::CellState::Alive => WHITE,
+                    conways::CellState::Dead => BLACK,
+                };
+
                 draw_rectangle(
                     x_row as f32 * CELL_SIZE,
                     y_col as f32 * CELL_SIZE,
                     CELL_SIZE,
                     CELL_SIZE,
-                    match col {
-                        conways::CellState::Alive => WHITE,
-                        conways::CellState::Dead => BLACK,
-                    },
+                    color,
                 );
             }
         }

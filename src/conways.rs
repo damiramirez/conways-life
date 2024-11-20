@@ -85,13 +85,13 @@ impl Conways {
             let new_y = position.1 as isize + y;
 
             // Avoid leaving the grid and check if the cell is alive
-            if new_x >= 0
-                && new_x < ROWS as isize
-                && new_y >= 0
-                && new_y < COLUMNS as isize
-                && self.grid[new_x as usize][new_y as usize] == CellState::Alive
+            if self
+                .grid
+                .get(new_x as usize)
+                .and_then(|column| column.get(new_y as usize))
+                .is_some_and(|state| *state == CellState::Alive)
             {
-                count += 1;
+                count += 1
             }
         }
         count
@@ -110,8 +110,6 @@ impl Conways {
 
 #[cfg(test)]
 mod tests {
-    use std::cell::Cell;
-
     use super::*;
 
     #[test]
