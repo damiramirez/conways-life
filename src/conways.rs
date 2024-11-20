@@ -20,8 +20,8 @@ impl Conways {
         let mut grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
 
         for (x, y) in alive_cells {
-            if x < ROWS && y < COLUMNS {
-                grid[x][y] = CellState::Alive;
+            if let Some(cell) = grid.get_mut(x).and_then(|column| column.get_mut(y)) {
+                *cell = CellState::Alive;
             }
         }
 
@@ -46,14 +46,10 @@ impl Conways {
     pub fn update_cells(&mut self) {
         let mut new_grid = self.grid.clone();
 
-        for (x, _) in self.grid.iter().enumerate() {
-            let Some(cols) = self.grid.first() else {
-                return;
-            };
-
-            for (y, _) in cols.iter().enumerate() {
+        for (x, (new_column, old_column)) in new_grid.iter_mut().zip(&self.grid).enumerate() {
+            for (y, cell) in old_column.iter().enumerate() {
                 let neighbors = self.count_neighbors((x, y));
-                new_grid[x][y] = match (self.grid[x][y], neighbors) {
+                new_column[y] = match (cell, neighbors) {
                     (CellState::Alive, 2 | 3) => CellState::Alive,
                     (CellState::Alive, _) => CellState::Dead,
                     (CellState::Dead, 3) => CellState::Alive,
