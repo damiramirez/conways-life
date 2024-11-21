@@ -15,8 +15,8 @@ pub struct Conways {
     pub grid: Vec<Vec<CellState>>,
 }
 
-impl Conways {
-    pub fn from(alive_cells: Vec<Position>) -> Self {
+impl From<Vec<Position>> for Conways {
+    fn from(alive_cells: Vec<Position>) -> Self {
         let mut grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
 
         for (x, y) in alive_cells {
@@ -27,7 +27,9 @@ impl Conways {
 
         Self { grid }
     }
+}
 
+impl Conways {
     pub fn kill_all_cells(&mut self) {
         self.grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
     }
