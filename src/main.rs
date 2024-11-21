@@ -84,7 +84,7 @@ async fn main() {
             conways.toggle_state_cell((mark_cell_x, mark_cell_y));
         }
 
-        if running && accum_delta >= 2. * TICK_RATE {
+        if running && accum_delta >= TICK_RATE {
             accum_delta -= TICK_RATE;
             conways.update_cells();
         } else if !running {
