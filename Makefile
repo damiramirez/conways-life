@@ -1,11 +1,10 @@
-.PHONY:
+.PHONY: run build test
+
 run:
 	cargo run
 
-.PHONY:
 build:
 	cargo build
 
-.PHONY:
 test:
 	cargo test

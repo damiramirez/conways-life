@@ -4,7 +4,7 @@ use conways::Conways;
 use macroquad::prelude::*;
 
 const CELL_SIZE: f32 = 20.;
-const UPDATE_TIMER: f64 = 0.1;
+const TICK_RATE: f32 = 1.0 / 11.;
 
 fn conf() -> Conf {
     Conf {
@@ -19,24 +19,26 @@ fn conf() -> Conf {
 
 #[macroquad::main(conf)]
 async fn main() {
-    let mut last_updated = 0_f64;
     let mut conways = Conways::from_random_cells();
-
     let mut running = true;
+    let mut accum_delta: f32 = 0.;
     loop {
+        accum_delta += get_frame_time();
         clear_background(BLACK);
 
         for (x_row, row) in conways.grid.iter().enumerate() {
             for (y_col, col) in row.iter().enumerate() {
+                let color = match col {
+                    conways::CellState::Alive => WHITE,
+                    conways::CellState::Dead => BLACK,
+                };
+
                 draw_rectangle(
                     x_row as f32 * CELL_SIZE,
                     y_col as f32 * CELL_SIZE,
                     CELL_SIZE,
                     CELL_SIZE,
-                    match col {
-                        conways::CellState::Alive => WHITE,
-                        conways::CellState::Dead => BLACK,
-                    },
+                    color,
                 );
             }
         }
@@ -82,10 +84,11 @@ async fn main() {
             conways.toggle_state_cell((mark_cell_x, mark_cell_y));
         }
 
-        if running && get_time() - last_updated > UPDATE_TIMER {
-            last_updated = get_time();
+        if running && accum_delta >= TICK_RATE {
+            accum_delta -= TICK_RATE;
             conways.update_cells();
         } else if !running {
+            accum_delta = 0.;
             let dimension = measure_text("PAUSE", None, 40, 1.);
             draw_text(
                 "PAUSE",

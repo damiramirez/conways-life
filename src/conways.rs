@@ -15,19 +15,21 @@ pub struct Conways {
     pub grid: Vec<Vec<CellState>>,
 }
 
-impl Conways {
-    pub fn from(alive_cells: Vec<Position>) -> Self {
+impl From<Vec<Position>> for Conways {
+    fn from(alive_cells: Vec<Position>) -> Self {
         let mut grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
 
         for (x, y) in alive_cells {
-            if x < ROWS && y < COLUMNS {
-                grid[x][y] = CellState::Alive;
+            if let Some(cell) = grid.get_mut(x).and_then(|column| column.get_mut(y)) {
+                *cell = CellState::Alive;
             }
         }
 
         Self { grid }
     }
+}
 
+impl Conways {
     pub fn kill_all_cells(&mut self) {
         self.grid = vec![vec![CellState::Dead; COLUMNS]; ROWS];
     }
@@ -46,14 +48,10 @@ impl Conways {
     pub fn update_cells(&mut self) {
         let mut new_grid = self.grid.clone();
 
-        for (x, _) in self.grid.iter().enumerate() {
-            let Some(cols) = self.grid.first() else {
-                return;
-            };
-
-            for (y, _) in cols.iter().enumerate() {
+        for (x, (new_column, old_column)) in new_grid.iter_mut().zip(&self.grid).enumerate() {
+            for (y, cell) in old_column.iter().enumerate() {
                 let neighbors = self.count_neighbors((x, y));
-                new_grid[x][y] = match (self.grid[x][y], neighbors) {
+                new_column[y] = match (cell, neighbors) {
                     (CellState::Alive, 2 | 3) => CellState::Alive,
                     (CellState::Alive, _) => CellState::Dead,
                     (CellState::Dead, 3) => CellState::Alive,
@@ -85,24 +83,23 @@ impl Conways {
             let new_y = position.1 as isize + y;
 
             // Avoid leaving the grid and check if the cell is alive
-            if new_x >= 0
-                && new_x < ROWS as isize
-                && new_y >= 0
-                && new_y < COLUMNS as isize
-                && self.grid[new_x as usize][new_y as usize] == CellState::Alive
+            if self
+                .grid
+                .get(new_x as usize)
+                .and_then(|column| column.get(new_y as usize))
+                .is_some_and(|state| *state == CellState::Alive)
             {
-                count += 1;
+                count += 1
             }
         }
         count
     }
 
     pub fn toggle_state_cell(&mut self, (x, y): Position) {
-        if x < ROWS && y < COLUMNS {
-            let current_state = self.grid[x][y];
+        if let Some(current_state) = self.grid.get_mut(x).and_then(|column| column.get_mut(y)) {
             match current_state {
-                CellState::Alive => self.grid[x][y] = CellState::Dead,
-                CellState::Dead => self.grid[x][y] = CellState::Alive,
+                CellState::Alive => *current_state = CellState::Dead,
+                CellState::Dead => *current_state = CellState::Alive,
             }
         }
     }
@@ -110,8 +107,6 @@ impl Conways {
 
 #[cfg(test)]
 mod tests {
-    use std::cell::Cell;
-
     use super::*;
 
     #[test]

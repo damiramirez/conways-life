@@ -6,8 +6,14 @@ Implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%2
 
 ## Usage
 
-- Clone the repository and navigate to the project directory. `git clone git@github.com:damiramirez/conways-life.git && cd conways-life`
-- Run the project with `make run`
+- Clone the repository and navigate to the project directory.
+  ```shell
+      git clone git@github.com:damiramirez/conways-life.git && cd conways-life
+  ```
+- Run the project
+  ```shell
+      make run
+  ```
 
 ## Functionality
 
